@@ -6,30 +6,36 @@ public class Calculator {
 			this.motorist = motorist;		
 		}
 		
-		public RiskFactor calculateMotoristRisk() {
+		public double calculateMotoristRisk(double insuranceValue) {
 			if(motorist.getPointsOnLicense() > 3 || motorist.getAge() < 25)
-				return RiskFactor.HIGH_RISK;
+				return new HIGH_RISK().getInsuranceValue(insuranceValue);
 			if(motorist.getPointsOnLicense() > 0)
-				return RiskFactor.MODERATE_RISK;
+				return new MODERATE_RISK().getInsuranceValue(insuranceValue);
 			
-			return RiskFactor.LOW_RISK;
+			return new LOW_RISK().getInsuranceValue(insuranceValue);
 		}
 		public double calculateInsurancePremium(double insuranceValue) {
-			RiskFactor riskFactor = calculateMotoristRisk();
-			switch(riskFactor) {
-				case LOW_RISK :
-					return insuranceValue * 0.02;
-				case MODERATE_RISK :
-					return insuranceValue * 0.04;
-				default :
-					return insuranceValue * 0.06;
-			}
+			return calculateMotoristRisk(insuranceValue);
 		}
 	}
-	enum RiskFactor {
-		LOW_RISK,
-		MODERATE_RISK,
-		HIGH_RISK		
+	abstract class RiskFactor {
+		abstract double getInsuranceValue(double insuranceValue);	
+	}
+	
+	class LOW_RISK extends RiskFactor{
+		double getInsuranceValue(double insuranceValue) {
+			return insuranceValue * 0.02;
+		}
+	}
+	class MODERATE_RISK extends RiskFactor{
+		double getInsuranceValue(double insuranceValue) {
+			return insuranceValue * 0.04;
+		}
+	}
+	class HIGH_RISK extends RiskFactor{
+		double getInsuranceValue(double insuranceValue) {
+			return insuranceValue * 0.06;
+		}
 	}
 	class Motorist {
 		private int points;
